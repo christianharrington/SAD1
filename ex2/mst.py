@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import math
 import sys
 
@@ -6,31 +8,29 @@ try:
 except IOError:
 	print("File {0} does not exist".format(sys.argv[1]))
 	exit()
-except IndexError:
-	print("Usage: python3 matcher.py filename.in")
-	exit()
 	
 class City:
 	def __init__(self, n):
 		self.name = n
 		self.connections = {}
 	
-	
 cities = {}
 roads = []
 
 for line in file:
-	if "--" in line:
-		edge = line.split("--")
-		f = edge[0]
-		t = edge.split(" ")[0]
-		weight = edge.split(" ")[1].replace("[", "").replace("]", "")
+	if "--" not in line:
+		name = line.strip().strip("\"")
+		cities[name] = City(name)
+	else: 
+		road = line.replace("\"", "").split("--")
+		city1 = road[0]
+		city2 = road[1][:road[1].find("[")].strip()
 		
+		weight = road[1][road[1].find("[")+1:].strip().strip("]")
 		
-	else:
-		n = line.replace("\"", "").strip()
+		print city1, '-', city2, ':', weight
 		
-	
-	cities[n] = City(n)
-	
-print(cities)
+		cities[city1].connections[city2] = weight
+		cities[city2].connections[city1] = weight
+
+#print(cities)
