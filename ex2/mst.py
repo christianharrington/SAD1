@@ -9,7 +9,9 @@ class Node:
 	def __init__(self, n):
 		self.id = n
 		self.edges = {}
-		
+		self.parent
+		self.rank
+	
 class Edge:
 	def __init__(self, node1, node2, weight):
 		self.node1 = node1
@@ -38,7 +40,31 @@ def loadFile():
 				nodes[node2].edges[node1] = road
 
 				print node1, '-', node2, ':', weight
+
+def find(node):
+	if node.parent != node:
+		node.parent = find(node.parent)
+	return node.parent
 				
+def makeSet(node):
+     node.parent = node
+     node.rank   = 0
+
+def union(node1, node2):
+	root1 = find(node1)
+	root2 = find(node2)
+	
+	if root1 == root2:
+		return
+	
+	if root1.rank > root2.rank:
+		root2.parent = root1
+	else if root1.rank < root2.rank:
+		root1.parent = root2
+	else:
+		root2.parent = root1
+		root1.rank = root1.rank + 1
+
 def kruskal(nodes, edges):
 	queue = list(edges)
 	while queue:
