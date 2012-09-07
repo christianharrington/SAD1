@@ -70,6 +70,7 @@ def kruskal(nodes, edges):
 	while queue:
 		edge = queue.pop(0)
 		print edge
+		# INSERT ALGORITHM HERE
 
 loadFile()
 edges.sort(cmp=lambda x,y:cmp(x.weight, y.weight))
