@@ -1,36 +1,50 @@
 #!/usr/bin/env python
 
-import math
 import sys
 
-try:
-	file = open(sys.argv[1]);
-except IOError:
-	print("File {0} does not exist".format(sys.argv[1]))
-	exit()
-	
-class City:
+nodes = {}
+edges = []
+
+class Node:
 	def __init__(self, n):
-		self.name = n
-		self.connections = {}
-	
-cities = {}
-roads = []
+		self.id = n
+		self.edges = {}
+		
+class Edge:
+	def __init__(self, node1, node2, weight):
+		self.node1 = node1
+		self.node2 = node2
+		self.weight = weight
+		
+	def __str__(self):
+		return str(self.weight)
 
-for line in file:
-	if "--" not in line:
-		name = line.strip().strip("\"")
-		cities[name] = City(name)
-	else: 
-		road = line.replace("\"", "").split("--")
-		city1 = road[0]
-		city2 = road[1][:road[1].find("[")].strip()
+def loadFile():
+	with open(sys.argv[1], 'r') as file:
+		for line in file:
+			if "--" not in line:
+				nodeID = line.strip().strip("\"")
+				nodes[nodeID] = Node(nodeID)
+			else: 
+				s = line.replace("\"", "").split("--")
+				node1 = s[0]
+				node2 = s[1][:s[1].find("[")].strip()
+				weight = s[1][s[1].find("[")+1:].strip().strip("]")
 		
-		weight = road[1][road[1].find("[")+1:].strip().strip("]")
+				road = Edge(nodes[node1], nodes[node2], int(weight))
+				edges.append(road)
 		
-		print city1, '-', city2, ':', weight
-		
-		cities[city1].connections[city2] = weight
-		cities[city2].connections[city1] = weight
+				nodes[node1].edges[node2] = road
+				nodes[node2].edges[node1] = road
 
-#print(cities)
+				print node1, '-', node2, ':', weight
+				
+def kruskal(nodes, edges):
+	queue = list(edges)
+	while queue:
+		edge = queue.pop(0)
+		print edge
+
+loadFile()
+edges.sort(cmp=lambda x,y:cmp(x.weight, y.weight))
+kruskal(nodes, edges)
