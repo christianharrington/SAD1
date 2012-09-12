@@ -48,10 +48,7 @@ def find(node):
 		node.parent = find(node.parent)
 	return node.parent
 
-def union(node1, node2):
-	root1 = find(node1)
-	root2 = find(node2)
-	
+def union(root1, root2):
 	if root1 == root2:
 		return
 	
@@ -70,7 +67,6 @@ def kruskal(nodes, edges):
 		edge = queue.pop(0)
 		if find(edge.node1) != find(edge.node2):
 			union(edge.node1, edge.node2)
-			count += 1
 			weight += edge.weight
 	print weight
 
