@@ -65,8 +65,10 @@ def kruskal(nodes, edges):
 	weight = 0
 	while queue:
 		edge = queue.pop(0)
-		if find(edge.node1) != find(edge.node2):
-			union(edge.node1, edge.node2)
+		f1 = find(edge.node1)
+		f2 = find(edge.node2)
+		if f1 != f2:
+			union(f1, f2)
 			weight += edge.weight
 	print weight
 
