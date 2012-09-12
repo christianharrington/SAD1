@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Christian Harrington & Nicolai Dahl
+
 import sys
 
 nodes = {}
