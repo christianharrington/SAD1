@@ -5,14 +5,12 @@
 import sys
 import os
 
-points = []
-
 class Point:
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
 
-def loadFile(file):
+def loadFile(file, points):
 	wait = False
 	
 	for line in file:
@@ -31,5 +29,5 @@ for file in sys.argv:
 	if file != sys.argv[0] and os.path.exists(file):
 		print "Parsing", file
 		points = []
-		loadFile(open(file, 'r'))
+		loadFile(open(file, 'r'), points)
 		closestPath(points)
