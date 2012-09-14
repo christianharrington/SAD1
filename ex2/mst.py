@@ -51,9 +51,6 @@ def find(node):
 	return node.parent
 
 def union(root1, root2):
-	if root1 == root2:
-		return
-	
 	if root1.rank > root2.rank:
 		root2.parent = root1
 	elif root1.rank < root2.rank:
