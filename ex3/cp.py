@@ -28,7 +28,7 @@ def split_in_two(alist):
              for i in range(2) ]
 
 def dist(point1, point2):
-    return math.sqrt(math.pow(abs(point1.x - point2.x), 2) + math.pow(abs(point1.y - point2.y), 2))
+    return math.sqrt(math.pow(point1.x - point2.x, 2) + math.pow(point1.y - point2.y, 2))
     
 
 def closestPath(points):
@@ -52,16 +52,46 @@ def closestPath(points):
                     
     p1counter = 0
     for p1 in ypoints:
-        comparasonPoints = ypoints[p1counter + 1:p1counter + 1 + 15]
-        for p2 in comparasonPoints:
+        comparisonPoints = ypoints[p1counter + 1:p1counter + 1 + 15]
+        for p2 in comparisonPoints:
             delta = min(dist(p1, p2), delta)
-        p1counter += p1counter + 1
+        p1counter += 1
                     
-    return delta   
+    return delta
+	
+def findClosestPair(file, printResults = False):
+	points = []
+	loadFile(open(file, 'r'), points)
+	points.sort(lambda po1, po2:cmp(po1.x, po2.x))
+	if printResults:
+		print '{}: {} {}'.format(file, len(points), closestPath(points))
+	return closestPath(points)
+	
+def compare(file):
+	error = False
+	for line in file:
+		filePattern = re.compile('^.*\.tsp')
+		resultPattern = re.compile('[E0-9.]*$')
+		
+		compareFile = filePattern.findall(line)[0]
+		compareResult = resultPattern.findall(line)[0]
+		
+		print 'Checking', compareFile
+		
+		result = findClosestPair(compareFile)
+		
+		if abs(result - float(compareResult)) < float('1e-7'):
+			print 'Correct:', compareResult, result
+		else:
+			print '\nIncorrect:', compareResult, result
+			error = True
+			
+		if error:
+			print 'There were errors'
 
 for file in sys.argv:
-    if file != sys.argv[0] and os.path.exists(file):
-		points = []
-		loadFile(open(file, 'r'), points)
-		points.sort(lambda po1, po2:cmp(po1.x, po2.x))
-		print '{}: {} {}'.format(file, len(points), closestPath(points))
+	if '.out' in sys.argv[1]:
+		compare(open(sys.argv[1], 'r'))
+		break
+	elif file != sys.argv[0] and os.path.exists(file):
+		findClosestPair(file, True)
