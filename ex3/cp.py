@@ -1,15 +1,10 @@
-'''
-Created on Sep 18, 2012
-
-@author: ndahl89
-'''
-
 #!/usr/bin/env python
 
 # Christian Harrington & Nicolai Dahl
 
 import sys
 import math
+import re
 import os
 
 class Point:
@@ -18,16 +13,14 @@ class Point:
         self.y = y
 
 def loadFile(a_file, points):
-    wait = False
-    
-    for line in a_file:
-        if "NAME" in line:
-            wait = True
-        elif "NODE_COORD_SECTION" in line:
-            wait = False
-        elif line.strip() and wait == False and not "EOF" in line:
-            s = line.strip().split(" ")
-            points.append(Point(float(s[1]), float(s[2])))
+	start = False
+	
+	for line in a_file:
+		if 'NODE_COORD_SECTION' in line:
+			start = True
+		elif start and line.strip() and ':' not in line and 'NODE_COORD_SECTION' not in line and not 'EOF' in line:
+			s = re.sub('\s+', ' ', line).strip().split(' ')
+			points.append(Point(float(s[1].strip()), float(s[2].strip())))
 
 def split_in_two(alist):
     length = len(alist)
@@ -64,19 +57,11 @@ def closestPath(points):
             delta = min(dist(p1, p2), delta)
         p1counter += p1counter + 1
                     
-    return delta
-    
-#exampleInput = [Point(1.0, 5.0), Point(1.5, 0.5), Point(2.0, 1.0), Point(11.0, 0.0)]
-#print(closestPath(exampleInput))    
+    return delta   
 
-#for file in sys.argv:
-#    if file != sys.argv[0] and os.path.exists(file):
-#        print "Parsing", file
-#        points = []
-#        loadFile(open(file, 'r'), points)
-#        print(closestPath(points))
-
-globalPoints = []
-loadFile(open('tsp/att532.tsp', 'r'), globalPoints)
-globalPoints.sort(lambda po1, po2:cmp(po1.x, po2.x))
-print(closestPath(globalPoints))
+for file in sys.argv:
+    if file != sys.argv[0] and os.path.exists(file):
+		points = []
+		loadFile(open(file, 'r'), points)
+		points.sort(lambda po1, po2:cmp(po1.x, po2.x))
+		print '{}: {} {}'.format(file, len(points), closestPath(points))
