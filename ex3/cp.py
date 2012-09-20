@@ -13,14 +13,14 @@ class Point:
         self.y = y
 
 def loadFile(a_file, points):
-	start = False
-	
-	for line in a_file:
-		if 'NODE_COORD_SECTION' in line:
-			start = True
-		elif start and line.strip() and ':' not in line and 'NODE_COORD_SECTION' not in line and not 'EOF' in line:
-			s = re.sub('\s+', ' ', line).strip().split(' ')
-			points.append(Point(float(s[1].strip()), float(s[2].strip())))
+    start = False
+    
+    for line in a_file:
+        if 'NODE_COORD_SECTION' in line:
+            start = True
+        elif start and line.strip() and ':' not in line and 'NODE_COORD_SECTION' not in line and not 'EOF' in line:
+            s = re.sub('\s+', ' ', line).strip().split(' ')
+            points.append(Point(float(s[1].strip()), float(s[2].strip())))
 
 def split_in_two(alist):
     length = len(alist)
@@ -55,13 +55,13 @@ def closestPath(points):
         comparasonPoints = ypoints[p1counter + 1:p1counter + 1 + 15]
         for p2 in comparasonPoints:
             delta = min(dist(p1, p2), delta)
-        p1counter += p1counter + 1
+        p1counter += 1
                     
     return delta   
 
-for file in sys.argv:
-    if file != sys.argv[0] and os.path.exists(file):
-		points = []
-		loadFile(open(file, 'r'), points)
-		points.sort(lambda po1, po2:cmp(po1.x, po2.x))
-		print '{}: {} {}'.format(file, len(points), closestPath(points))
+for afile in ['data/bier127.tsp']:
+    if afile != sys.argv[0] and os.path.exists(afile):
+        points = []
+        loadFile(open(afile, 'r'), points)
+        points.sort(lambda po1, po2:cmp(po1.x, po2.x))
+        print '{}: {} {}'.format(file, len(points), closestPath(points))
