@@ -13,14 +13,14 @@ class Point:
         self.y = y
 
 def loadFile(a_file, points):
-	start = False
-	
-	for line in a_file:
-		if 'NODE_COORD_SECTION' in line:
-			start = True
-		elif start and line.strip() and ':' not in line and 'NODE_COORD_SECTION' not in line and not 'EOF' in line:
-			s = re.sub('\s+', ' ', line).strip().split(' ')
-			points.append(Point(float(s[1].strip()), float(s[2].strip())))
+    start = False
+    
+    for line in a_file:
+        if 'NODE_COORD_SECTION' in line:
+            start = True
+        elif start and line.strip() and ':' not in line and 'NODE_COORD_SECTION' not in line and not 'EOF' in line:
+            s = re.sub('\s+', ' ', line).strip().split(' ')
+            points.append(Point(float(s[1].strip()), float(s[2].strip())))
 
 def split_in_two(alist):
     length = len(alist)
