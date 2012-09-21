@@ -17,7 +17,17 @@ def loadFile(file):
 			
 	return seqs
 	
+def alignment(x, y):
+	penaltyArray = []
+	
+	for i in range(0, len(x)):
+		penaltyArray.append([max(len(x), len(y)) for item in range(0, len(y))])
+	
+	
+	
 def seqAlg(seqs):
 	return seqs
 			
 print seqAlg(loadFile(open(sys.argv[1], 'r')))
+
+print alignment('hej', 'ehje')
