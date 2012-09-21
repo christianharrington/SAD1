@@ -31,7 +31,7 @@ def dist(point1, point2):
     return math.sqrt(math.pow(point1.x - point2.x, 2) + math.pow(point1.y - point2.y, 2))
     
 
-def closestPath(points):
+def closestPair(points):
     point_count = len(points)
     
     if point_count == 1:
@@ -45,7 +45,7 @@ def closestPath(points):
     
     xline = right[0].x
     
-    delta = min(closestPath(left), closestPath(right))    
+    delta = min(closestPair(left), closestPair(right))    
     
     ypoints = [p for p in points if delta >= abs(p.x - xline)]
     ypoints.sort(lambda po1, po2:cmp(po1.y, po2.y))
@@ -64,8 +64,8 @@ def findClosestPair(file, printResults = False):
 	loadFile(open(file, 'r'), points)
 	points.sort(lambda po1, po2:cmp(po1.x, po2.x))
 	if printResults:
-		print '{}: {} {}'.format(file, len(points), closestPath(points))
-	return closestPath(points)
+		print '{}: {} {}'.format(file, len(points), closestPair(points))
+	return closestPair(points)
 	
 def compare(file):
 	error = False
