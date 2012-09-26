@@ -5,9 +5,6 @@
 import sys
 import re
 
-delta = float('-inf')
-penaltyArray = []
-
 # Loads the score table
 def loadScores(file):
     scores = {}
@@ -72,23 +69,23 @@ def loadCompare(cfile):
 # The algorithm
 def opt(x, i, y, j):
     if i == 0 and j == 0:
-        penalty = scores[x[i]][y[j]]
-        if penalty < delta:
+        score = scores[x[i]][y[j]]
+        if score < delta:
             return (delta, '-', y[j])
         else:
-            return (penalty, x[i], y[j])
+            return (score, x[i], y[j])
     elif i < 0:
         return (delta * (j + 1), '-' * (j + 1), y[0:j + 1])
     elif j < 0:
         return (delta * (i + 1), x[0:i + 1], '-' * (i + 1))
     else:
-        if penaltyArray[i][j][0] is None:
-            penalty = scores[x[i]][y[j]]
+        if dynamicScores[i][j][0] is None:
+            score = scores[x[i]][y[j]]
             first = opt(x, i - 1, y, j - 1)
             snd = opt(x, i - 1, y, j)
             third = opt(x, i, y, j - 1)
                 
-            maxval = (penalty + first[0], first[1] + x[i], first[2] + y[j])
+            maxval = (score + first[0], first[1] + x[i], first[2] + y[j])
                         
             if delta + snd[0] > maxval[0]:
                 maxval = (delta + snd[0], snd[1] + x[i], snd[2] + '-')
@@ -98,17 +95,17 @@ def opt(x, i, y, j):
                 
             return maxval
         else:
-            return penaltyArray[i][j]
+            return dynamicScores[i][j]
         
 def alignment(x, y):
     for _ in range(0, len(x)):
-        penaltyArray.append([(None, '', '') for i in range(0, len(y))])
+        dynamicScores.append([(None, '', '') for i in range(0, len(y))])
 
     for i in range(0, len(x)):
         for j in range(0, len(y)):
-            penaltyArray[i][j] = opt(x, i, y, j)
+            dynamicScores[i][j] = opt(x, i, y, j)
         
-    return penaltyArray[len(x) - 1][len(y) - 1]
+    return dynamicScores[len(x) - 1][len(y) - 1]
     
 # Load files and run the algorithm./sa.py data/BLOSUM62.txt data/HbB_FASTAs.in data/HbB_FASTAs.out
 scores = loadScores(open(sys.argv[1], 'r'))
@@ -119,7 +116,7 @@ compareResults = loadCompare(open(sys.argv[3], 'r'))
 incorrect = 0
 
 for s in compareResults:
-    penaltyArray = []
+    dynamicScores = []
     
     v1 = seqs[s[0]]
     v2 = seqs[s[1]]
