@@ -99,7 +99,7 @@ def alignment(x, y):
 scores = loadScores(open('BLOSUM62.txt', 'r'))
 delta = scores['*']['A']
 print delta
-print alignment('KQIIIIIIIABK', 'KQABK')
+print alignment('KAK', 'KQRIKAAKABK')
 
 #seqs = loadSequence(open(sys.argv[2], 'r'))
 
