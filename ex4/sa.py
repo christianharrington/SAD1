@@ -6,6 +6,7 @@ import sys
 import re
 
 delta = float('-inf')
+penaltyArray = []
 
 # Loads the score table
 def loadScores(file):
@@ -51,38 +52,38 @@ def loadSequence(file):
 
 # The algorithm
 def opt(x, i, y, j):
+    if penaltyArray[i][j][0] is None:
     
-    if i == 0 and j == 0:
-        penalty = scores[x[i]][y[j]]
-        return (max(penalty, delta), y[j])
-    elif i < 0:
-        return (delta * j + 1, '-' * (j + 1))
-    elif j < 0:
-        return (delta * i + 1, '-' * (i + 1))
-    else:
-        penalty = scores[x[i]][y[j]]
-        first = opt(x, i - 1, y, j - 1)
-        snd = opt(x, i - 1, y, j)
-        third = opt(x, i, y, j - 1)
-        
-        maxval = (float('-inf'), '')
-        
-        if penalty + first[0] > maxval[0]:
+        if i == 0 and j == 0:
+            penalty = scores[x[i]][y[j]]
+            return (max(penalty, delta), y[j])
+        elif i < 0:
+            return (delta * (j + 1), '-' * (j + 1))
+        elif j < 0:
+            return (delta * (i + 1), '-' * (i + 1))
+        else:
+            penalty = scores[x[i]][y[j]]
+            first = opt(x, i - 1, y, j - 1)
+            snd = opt(x, i - 1, y, j)
+            third = opt(x, i, y, j - 1)
+            
             maxval = (penalty + first[0], first[1] + y[j])
-        
-        if delta + snd[0] > maxval[0]:
-            maxval = (delta + snd[0], snd[1] + '-')
-            
-        if delta + third[0] > maxval[0]:
-            maxval = (delta + third[0], third[1] + '-')
-            
-        return maxval
+                    
+            if delta + snd[0] > maxval[0]:
+                maxval = (delta + snd[0], snd[1] + '-')
+                
+            if delta + third[0] > maxval[0]:
+                maxval = (delta + third[0], third[1] + '-')
+                
+            return maxval
+    else:
+        return penaltyArray[i][j]
         
 def alignment(x, y):
-    penaltyArray = []
+    
     
     for i in range(0, len(x)):
-        penaltyArray.append([(float('-inf'), '') for _ in range(0, len(y))])
+        penaltyArray.append([(None, '') for _ in range(0, len(y))])
         
 
     for i in range(0, len(x)):
@@ -97,7 +98,7 @@ def alignment(x, y):
 scores = loadScores(open('BLOSUM62.txt', 'r'))
 delta = scores['*']['A']
 print delta
-print alignment('KQRIKAAKABK', 'KAK')
+print alignment('KQRK', 'KQRIKAAKABK')
 
 #seqs = loadSequence(open(sys.argv[2], 'r'))
 
