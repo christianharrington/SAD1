@@ -128,19 +128,12 @@ for s in compareResults:
     
     print '{}--{}: {}/{}'.format(s[0], s[1], s[2], sa[0])
     
-    print s[3]
-    print s[4]
-    print 
-    print sa[1]
-    print sa[2]
-    print
+    print '{}\n{}\n\n{}\n{}\n'.format(s[3], s[4], sa[1], sa[2])
     
     if sa[0] == float(s[2]):
-        print 'CORRECT'
+        print 'CORRECT\n'
     else:
-        print 'INCORRECT'
+        print 'INCORRECT\n'
         incorrect += 1
-    
-    print
     
 print 'Incorrect results: {}\n'.format(incorrect)
