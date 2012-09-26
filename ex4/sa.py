@@ -83,16 +83,10 @@ def opt(x, i, y, j):
                 return penaltyArray[i][j]
         
 def alignment(x, y):
-    
-    
-    for i in range(0, len(x)):
+    for _ in range(0, len(x)):
         penaltyArray.append([(None, '', '') for _ in range(0, len(y))])
-        
 
-    for i in range(0, len(x)):
-        for j in range(0, len(y)):
-            penaltyArray[i][j] = opt(x, i, y, j)
-    
+    penaltyArray[len(x) - 1][len(y) - 1] = opt(x, len(x) - 1, y, len(y) - 1)
     return penaltyArray[len(x) - 1][len(y) - 1]
 
 
