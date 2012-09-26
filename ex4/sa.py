@@ -30,7 +30,7 @@ def loadScores(file):
             scoreMatches = scoresPattern.findall(line[1:])
 
             for s in scoreMatches:
-                scores[line[0]][scoreOrder[n]] = float(s)
+                scores[line[0]][scoreOrder[n]] = int(s)
                 n += 1
                  
     return scores            
