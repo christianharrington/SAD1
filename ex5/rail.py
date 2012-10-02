@@ -56,11 +56,21 @@ def loadData(railFile):
 	
 graph = loadData(open(sys.argv[1], 'r'))
 
+
+prevDict = {}
+
+def bottleneck(path):
+	if len(path) == 1:
+		return path[0].capacity
+	else:
+		e = path.pop[0]
+		return max(bottleneck(path), e.capacity)
+
 def backtrackPath(source, tempNode):
 	if source == tempNode:
 		return source
 	else:
-		return backtrackPath.insert(0, tempNode)
+		return backtrackPath(source, prevDict[tempNode.id]).insert(0, tempNode)
 
 def bfs(source, sink):
 	prevDict = {}
@@ -76,8 +86,9 @@ def bfs(source, sink):
 			return backtrackPath(source, t)
 		else:
 			for edge in t.edges:
-				prevDict(edge.toNode) = edge.fromNode
-				visitedDict(edge.fromNode) = True
+				prevDict[edge.toNode] = edge.fromNode
+				visitedDict[edge.fromNode] = True
 				q.append(edge)
 	
 	
+
