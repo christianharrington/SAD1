@@ -2,17 +2,21 @@
 
 # Christian Harrington & Nicolai Dahl
 
-from collections import deque
+import sys
 
 class Graph:
-	def __init__(self, vertices, edges):
-		self.vertices = vertices
+	def __init__(self, nodes, edges):
+		self.nodes = nodes
 		self.edges = edges
 
 class Node:
-	def __init__(self, n):
-		self.id = n
+	def __init__(self, i, name):
+		self.id = i
+		self.name = name
 		self.edges = []
+		
+	def __str__(self):
+		return str(self.id) + ': ' + self.name
 		
 class Edge:
 	def __init__(self, fromNode, toNode, capacity, flow):
@@ -20,6 +24,37 @@ class Edge:
 		self.toNode = toNode
 		self.capacity = capacity
 		self.flow = flow
+		
+	def __str__(self):
+		return str(self.fromNode) + ' ' + str(self.toNode) + ' ' + str(self.capacity)
+
+def loadData(railFile):
+	i = 0
+	nodes = []
+	edges = []
+	
+	for line in railFile:
+		lint = line.strip()
+		
+		if i == 0:
+			n = int(line)
+		elif i <= n:
+			nodes.append(Node(i - 1, line))
+		elif i == n + 1:
+			m = int(line)
+		else:
+			(fromNode, toNode, cap) = line.split(' ')
+			
+			edge = Edge(int(fromNode), int(toNode), int(cap), 0)
+			edges.append(edge)
+			nodes[int(fromNode)].edges.append(edge)
+			nodes[int(toNode)].edges.append(edge)
+			
+		i += 1
+		
+	return Graph(nodes, edges)
+	
+graph = loadData(open(sys.argv[1], 'r'))
 
 def backtrackPath(source, tempNode):
 	if source == tempNode:
