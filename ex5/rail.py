@@ -34,15 +34,15 @@ def loadData(railFile):
 	edges = []
 	
 	for line in railFile:
-		lint = line.strip()
+		line = line.strip()
 		
-		if i == 0:
+		if i == 0: # Number of nodes
 			n = int(line)
-		elif i <= n:
+		elif i <= n: # Load nodes
 			nodes.append(Node(i - 1, line))
-		elif i == n + 1:
+		elif i == n + 1: # Number of edges
 			m = int(line)
-		else:
+		elif i <= n + m + 1: # Edges
 			(fromNode, toNode, cap) = line.split(' ')
 			
 			edge = Edge(int(fromNode), int(toNode), int(cap), 0)
@@ -53,9 +53,6 @@ def loadData(railFile):
 		i += 1
 		
 	return Graph(nodes, edges)
-	
-graph = loadData(open(sys.argv[1], 'r'))
-
 
 prevDict = {}
 
@@ -89,6 +86,16 @@ def bfs(source, sink):
 				prevDict[edge.toNode] = edge.fromNode
 				visitedDict[edge.fromNode] = True
 				q.append(edge)
+				
+def augment(flow, path):
+	b = bottleneck(flow, path)
 	
+	for edge in path:
+		if edge is forward:
+			edge.flow += b
+		else:
+			edge.flow -= b
 	
-
+	return bottleneck(0, path)
+	
+graph = loadData(open(sys.argv[1], 'r'))
