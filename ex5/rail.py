@@ -30,7 +30,6 @@ class Edge:
         return str(self.fromNode) + ' ' + str(self.toNode) + ' ' + str(self.capacity)
 
 def loadData(railFile):
-
     i = 0
     nodes = []
     edges = []
@@ -56,12 +55,8 @@ def loadData(railFile):
         
     return Graph(nodes, edges)
 
-
-prevDict = {}
-
 def bottleneck(path):
     return min([e.capacity - e.flow for e in path])
-
 
 def backtrackPath(source, tempNode):
     if source == tempNode:
@@ -87,8 +82,6 @@ def bfs(source, sink):
                     prevDict[edge.toNode] = edge.fromNode
                     visitedDict[edge.fromNode] = True
                     q.append(edge)
-
-
                 
 def augment(flow, path):
     b = bottleneck(path)
@@ -101,7 +94,3 @@ def augment(flow, path):
     return flow + b
     
 graph = loadData(open(sys.argv[1], 'r'))
-
-
-
-
