@@ -31,30 +31,30 @@ class Edge:
 
 def loadData(railFile):
 
-	i = 0
-	nodes = []
-	edges = []
-	
-	for line in railFile:
-		line = line.strip()
-		
-		if i == 0: # Number of nodes
-			n = int(line)
-		elif i <= n: # Load nodes
-			nodes.append(Node(i - 1, line))
-		elif i == n + 1: # Number of edges
-			m = int(line)
-		elif i <= n + m + 1: # Edges
-			(fromNode, toNode, cap) = line.split(' ')
-			
-			edge = Edge(int(fromNode), int(toNode), int(cap), 0)
-			edges.append(edge)
-			nodes[int(fromNode)].edges.append(edge)
-			nodes[int(toNode)].edges.append(edge)
-			
-		i += 1
-		
-	return Graph(nodes, edges)
+    i = 0
+    nodes = []
+    edges = []
+    
+    for line in railFile:
+        line = line.strip()
+        
+        if i == 0: # Number of nodes
+            n = int(line)
+        elif i <= n: # Load nodes
+            nodes.append(Node(i - 1, line))
+        elif i == n + 1: # Number of edges
+            m = int(line)
+        elif i <= n + m + 1: # Edges
+            (fromNode, toNode, cap) = line.split(' ')
+            
+            edge = Edge(int(fromNode), int(toNode), int(cap), 0)
+            edges.append(edge)
+            nodes[int(fromNode)].edges.append(edge)
+            nodes[int(toNode)].edges.append(edge)
+            
+        i += 1
+        
+    return Graph(nodes, edges)
 
 
 prevDict = {}
@@ -83,23 +83,23 @@ def bfs(source, sink):
             return backtrackPath(source, t)
         else:
             for edge in t.edges:
-				if not visitedDict[edge.toNode] == None:
-					prevDict[edge.toNode] = edge.fromNode
-					visitedDict[edge.fromNode] = True
-					q.append(edge)
+                if not visitedDict[edge.toNode] == None:
+                    prevDict[edge.toNode] = edge.fromNode
+                    visitedDict[edge.fromNode] = True
+                    q.append(edge)
 
 
-				
+                
 def augment(flow, path):
-	b = bottleneck(path)
-	
-	for edge in path:
-		edge.flow -= b
-		reverseEdge = next(x for x in edge.toNode.edges if x.toNode == edge.fromNode)
-		reverseEdge += b
-	
-	return bottleneck(0, path)
-	
+    b = bottleneck(path)
+    
+    for edge in path:
+        edge.flow -= b
+        reverseEdge = next(x for x in edge.toNode.edges if x.toNode == edge.fromNode)
+        reverseEdge += b
+    
+    return flow + b
+    
 graph = loadData(open(sys.argv[1], 'r'))
 
 
