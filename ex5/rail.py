@@ -87,10 +87,11 @@ def bfs(source, sink):
                     prevDict[edge.toNode] = edge.fromNode
                     visitedDict[edge.fromNode] = True
                     q.append(edge)
-
+        
+        return None
 
                 
-def augment(flow, path):
+def augment(path):
     b = bottleneck(path)
     
     for edge in path:
@@ -98,9 +99,30 @@ def augment(flow, path):
         reverseEdge = next(x for x in edge.toNode.edges if x.toNode == edge.fromNode)
         reverseEdge += b
     
-    return flow + b
+    return b
     
-graph = loadData(open(sys.argv[1], 'r'))
+def maxFlow():
+    flow = 0
+    
+    graph = loadData(open(sys.argv[1], 'r'))
+    resGraph = copy.deepcopy(graph)
+    
+    s = resGraph.nodes.first
+    t = resGraph.nodes.last
+    
+    path = bfs(s, t)
+    while not path == None:
+        flow += augment(path)
+        path = bfs(s, t)
+        
+    return f    
+         
+        
+    
+    
+
+
+
 
 
 
