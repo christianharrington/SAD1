@@ -117,7 +117,7 @@ def maxFlow():
         
     return f    
          
-        
+maxFlow()
     
     
 
