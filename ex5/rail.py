@@ -60,7 +60,7 @@ def loadData(railFile):
 prevDict = {}
 
 def bottleneck(path):
-    return min([e.capacity for e in path])
+    return min([e.capacity - e.flow for e in path])
 
 
 def backtrackPath(source, tempNode):
@@ -94,8 +94,9 @@ def augment(flow, path):
 	b = bottleneck(path)
 	
 	for edge in path:
-		edge.flow += b
-		reverseEdge = edge.toNode.edges
+		edge.flow -= b
+		reverseEdge = next(x for x in edge.toNode.edges if x.toNode == edge.fromNode)
+		reverseEdge += b
 	
 	return bottleneck(0, path)
 	
