@@ -4,6 +4,7 @@
 
 import sys
 import collections
+import copy
 
 class Graph:
     def __init__(self, nodes, edges):
@@ -76,14 +77,14 @@ def bfs(source, sink):
     q = collections.deque()
     q.append(source)
     
-    while(not q.empty()):
+    while(not len(q) == 0):
         t = q.popleft()
 
         if t == sink:
             return backtrackPath(source, t)
         else:
             for edge in t.edges:
-                if not visitedDict[edge.toNode] == None:
+                if edge.toNode in visitedDict:
                     prevDict[edge.toNode] = edge.fromNode
                     visitedDict[edge.fromNode] = True
                     q.append(edge)
@@ -107,15 +108,15 @@ def maxFlow():
     graph = loadData(open(sys.argv[1], 'r'))
     resGraph = copy.deepcopy(graph)
     
-    s = resGraph.nodes.first
-    t = resGraph.nodes.last
+    s = resGraph.nodes[0]
+    t = resGraph.nodes[len(resGraph.nodes) - 1]
     
     path = bfs(s, t)
     while not path == None:
         flow += augment(path)
         path = bfs(s, t)
         
-    return f    
+    return flow 
          
 maxFlow()
     
