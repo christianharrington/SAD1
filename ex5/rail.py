@@ -118,7 +118,7 @@ def maxFlow():
         
     return flow 
          
-maxFlow()
+print maxFlow()
     
     
 
