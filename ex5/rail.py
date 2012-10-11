@@ -47,10 +47,15 @@ def loadData(railFile):
         elif i <= n + m + 1: # Edges
             (fromNode, toNode, cap) = line.split(' ')
             
-            edge = Edge(int(fromNode), int(toNode), int(cap), 0)
+            if int(cap) == -1:
+                cap = sys.maxint
+            
+            edge = Edge(nodes[int(fromNode)], nodes[int(toNode)], int(cap), 0)
+            edgeRev = Edge(nodes[int(toNode)], nodes[int(fromNode)], int(cap), 0)
+            
             edges.append(edge)
             nodes[int(fromNode)].edges.append(edge)
-            nodes[int(toNode)].edges.append(edge)
+            nodes[int(toNode)].edges.append(edgeRev)
             
         i += 1
         
@@ -59,11 +64,16 @@ def loadData(railFile):
 def bottleneck(path):
     return min([e.capacity - e.flow for e in path])
 
-def backtrackPath(source, tempNode):
+
+def backtrackPath(source, tempNode, prevDict):
     if source == tempNode:
-        return source
+        return []
     else:
-        return backtrackPath(source, prevDict[tempNode.id]).insert(0, tempNode)
+        prevNode = prevDict[tempNode.id]
+        ret = backtrackPath(source, prevNode, prevDict)
+        forwardEdge = next(x for x in prevNode.edges if x.toNode == tempNode)
+        ret.append(forwardEdge)
+        return ret 
 
 def bfs(source, sink):
     prevDict = {}
@@ -73,26 +83,65 @@ def bfs(source, sink):
     q.append(source)
     
     while(not len(q) == 0):
-        t = q.popleft()
+        n = q.popleft()
+        visitedDict[n] = True
 
-        if t == sink:
-            return backtrackPath(source, t)
+        if n == sink:
+            return backtrackPath(source, n, prevDict)
         else:
-            for edge in t.edges:
-                if edge.toNode in visitedDict:
-                    prevDict[edge.toNode] = edge.fromNode
-                    visitedDict[edge.fromNode] = True
-                    q.append(edge)
+            for edge in n.edges:
+                if not edge.capacity - edge.flow == 0:
+                    if edge.toNode not in visitedDict:
+                        prevDict[edge.toNode.id] = n
+                        q.append(edge.toNode)
     return None
 
+def findSetA(source):
+    visitedDict = {}
+
+    q = collections.deque()
+    q.append(source)
+    
+    while(not len(q) == 0):
+        n = q.popleft()
+        visitedDict[n] = True
+
+        for edge in n.edges:
+            if not edge.capacity - edge.flow == 0:
+                if edge.toNode not in visitedDict:
+                    q.append(edge.toNode)
+    
+    return visitedDict
+
+def bottleneckEdges(sink, setA):
+    visitedDict = {}
+
+    q = collections.deque()
+    q.append(sink)
+    
+    retList = []
+    
+    while(not len(q) == 0):
+        n = q.popleft()
+        visitedDict[n] = True
+
+        for edge in n.edges:
+            if not edge.capacity - edge.flow == 0:
+                if edge.toNode in setA:
+                    retList.append(edge)
+                elif edge.toNode not in visitedDict:
+                    q.append(edge.toNode)
+    
+    return retList
                 
 def augment(path):
     b = bottleneck(path)
     
     for edge in path:
-        edge.flow -= b
+        edge.flow += b
+        
         reverseEdge = next(x for x in edge.toNode.edges if x.toNode == edge.fromNode)
-        reverseEdge += b
+        reverseEdge.flow -= b
     
     return b
     
@@ -100,20 +149,25 @@ def maxFlow():
     flow = 0
     
     graph = loadData(open(sys.argv[1], 'r'))
+    #graph = loadData(open('test.txt', 'r'))
     resGraph = copy.deepcopy(graph)
     
     s = resGraph.nodes[0]
     t = resGraph.nodes[len(resGraph.nodes) - 1]
     
     path = bfs(s, t)
-    while not path == None:
+    while path is not None:
         flow += augment(path)
         path = bfs(s, t)
-        
-    return flow 
-         
-print maxFlow()
     
+    setA = findSetA(s)
+    be = bottleneckEdges(t, setA)
+    for e in be:
+        print e
+
+    print flow
+    
+maxFlow()    
     
 
 
